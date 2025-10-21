@@ -11,7 +11,7 @@
 #include "entrega.h"
 #include "lista.h"
 
-static Lista *lista_entregas = NULL; // lista privada dentro do modulo
+//extern Lista *lista_entregas = NULL; // lista privada dentro do modulo
 
 //Essa lista serve como estrutura interna para organizar todas as funcoes dentro do modulo
 
@@ -20,9 +20,11 @@ static Lista *lista_entregas = NULL; // lista privada dentro do modulo
  * Esse construtor inicializa a classe em seu estado interno.
  *inicia a classe entregas
  */
-Lista *inicializar_entregas() {
-    if (!lista_entregas)
-        lista_entregas = criar_lista();
+Lista *inicializar_entregas(Lista *lista) {
+    if (!lista){
+        lista = criar_lista();
+        return lista;
+    }
 }
 
 
@@ -81,15 +83,15 @@ void mostrar_entrega(void *dado) {
 }
 //Chamada de funcao remover_no() para remoção da entrega que usuário deseja.
 //procura a entrega pelo id infomardo e exclui
-void remover_entrega(int id){
-	if (lista_entregas == NULL){
+void remover_entrega(Lista *lista, int id){
+	if (lista == NULL){
 		printf("Erro. Nao ha entregas.\n");
 	}
-	No *atual = lista_entregas->inicio;
+	No *atual = lista->inicio;
 	while(atual != NULL){
 		Entrega *entrega = (Entrega*) atual->dado;
 		if(entrega->id == id){
-			remover_no(lista_entregas, atual);
+			remover_no(lista, atual);
 			return;
 		}
 
@@ -98,7 +100,26 @@ void remover_entrega(int id){
 /*
  * adiciono uma entrega que já existe dentro da minha lista
  */
-void adicionar_entrega(Entrega *entrega) {
-    if (!lista_entregas || !entrega) return;
-    inserir_final(lista_entregas, entrega);
+void adicionar_entrega(Lista *lista, Entrega *entrega) {
+    if (!lista || !entrega) return;
+    inserir_final(lista, entrega);
 }
+
+void ordenar_prioridade_entrega(Lista *lista){
+	if(!lista){
+		printf("Lista entregas nao incializada.");
+		return;
+	}
+	    ordenar_lista(lista, comparar_prioridade);
+}
+
+int comparar_prioridade(void *a, void *b){
+	Entrega *entA = (Entrega*)a;
+	Entrega *entB = (Entrega*)b;
+	if(entA->prioridade < entB->prioridade) return -1;
+	if(entA->prioridade > entB->prioridade) return 1;
+	return 0;
+
+}
+
+

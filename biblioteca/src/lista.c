@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "lista.h"
 
+
 Lista *criar_lista(){
 	Lista *lista = malloc(sizeof *lista);
 
@@ -53,13 +54,14 @@ void *inserir_final(Lista *lista, void *dado){
 	if (lista->fim != NULL){
 		lista->fim->proximo = novo; //o atual fim aponta pra o novo nó
 
-		lista->fim->anterior = lista->fim; //o novo nó aponta para o antigo fim
+		novo->anterior = lista->fim; //o novo nó aponta para o antigo fim
 
 		lista->fim = novo; //atualizo o fim da lista
 	}else{
 		lista->inicio = novo;
 		lista->fim = novo;
 	}
+
 	lista->tamanho++;
 }
 
@@ -125,6 +127,34 @@ void percorrer_lista(Lista *lista, void (*funcao)(void*)) {
         funcao(atual->dado);
         atual = atual->proximo;
     }
+}
+void ordenar_lista(Lista *lista, int (*comparar)(void *, void *)){
+	if(!lista || !lista->inicio) {
+	printf("Erro. Endero de lista ou funcao invalido.\n");
+	return;
+	}
+	int trocou;
+	No *i;
+	do {
+		i = lista->inicio;
+		trocou = 0;
+		while(i->proximo != NULL){
+			void *a =  i->dado;
+			void *b =  i->proximo->dado;
+			//ex.: pra facilitar, quanto menor o numero, maior a prioridade: a=10 b=4
+			//atual: [a] -> [b] -> NULL
+			//depois: [b] -> [a] -> NULL
+			if(comparar(a, b) > 0){
+				void *temp = i->dado; //variável temporaria para armazenar o dado do no atual
+
+				i->dado = i->proximo->dado; //ex.: inicio recebe o endereco da proxima entrega [b]
+											//b esta num nivel de prioridade mais importante e passa
+				i->proximo->dado = temp;//o proximo aqui aponta para [a]
+				trocou = 1;
+			}
+			i = i->proximo;
+		}
+	} while (trocou != 0);
 }
 
 

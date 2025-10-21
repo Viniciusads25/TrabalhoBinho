@@ -26,13 +26,15 @@ Lista *criar_lista();
 
 void destruir_lista(Lista *lista, void (*liberar_dado)(void*));
 
-void *inserir_no_final(Lista *lista, void *dado);
+void *inserir_final(Lista *lista, void *dado);
 
-void *inserir_no_inicio(Lista *lista, void *dado);
+void *inserir_inicio(Lista *lista, void *dado);
 
 void remover_no(Lista *lista, No *no);
 
 void percorrer_lista(Lista *lista, void (*func)(void*));
+
+void ordenar_prioridade(Lista *lista);
 
 
 #endif /* INCLUDES_LISTA_H_ */

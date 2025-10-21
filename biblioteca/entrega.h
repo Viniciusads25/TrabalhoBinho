@@ -43,11 +43,15 @@ Entrega *criar_entrega( const char *origem, const char *destino,
                         double peso, double distancia, int prioridade, double custo, double tempo, Lista *lista);
 void destruir_entrega(void *entrega); // compatível com lista
 
-void remover_entrega(int id);
+void remover_entrega(Lista *lista, int id);
 
 void mostrar_entrega(void *entrega);
 
-void adicionar_entrega(Entrega *entrega);
+void adicionar_entrega(Lista *lista, Entrega *entrega);
+
+void ordenar_prioridade_entrega(Lista *lista);
+
+int comparar_prioridade(void *a, void *b);
 
 
 #endif /* INCLUDES_ENTREGA_H_ */
