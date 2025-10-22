@@ -51,7 +51,8 @@ void adicionar_entrega(Lista *lista, Entrega *entrega);
 
 void ordenar_prioridade_entrega(Lista *lista);
 
-void editar_entrega(Lista *lista, int id);
+void editar_entrega(const char *origem, const char *destino,
+        double peso, double distancia, int prioridade, double custo, double tempo, Lista *lista,  int id);
 
 
 

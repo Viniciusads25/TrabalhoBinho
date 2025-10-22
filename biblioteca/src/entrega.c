@@ -20,6 +20,7 @@
  * Esse construtor inicializa a classe em seu estado interno.
  *inicia a classe entregas
  */
+
 Lista *inicializar_entregas(Lista *lista) {
     if (!lista){
         lista = criar_lista();
@@ -125,7 +126,8 @@ void ordenar_prioridade_entrega(Lista *lista) {
     ordenar_lista(lista, comparar_prioridade); // sem parênteses!
 }
 
-void editar_entrega(Lista *lista, int id) {
+void editar_entrega(const char *origem, const char *destino,
+        double peso, double distancia, int prioridade, double custo, double tempo, Lista *lista,  int id) {
     if (!lista || lista->tamanho == 0) {
         printf("Lista vazia.\n");
         return;
@@ -135,38 +137,34 @@ void editar_entrega(Lista *lista, int id) {
     while (atual) {
         Entrega *ent = (Entrega*)atual->dado;
         if (ent->id == id) {
-            printf("Editando entrega ID %d\n", id);
+            printf("Editando entrega %d\n", id);
 
             // Editar origem
-            printf("Origem atual: %s\n", ent->origem);
-            ler_texto("Nova origem: ", ent->origem, 32);
+
+            strncpy(ent->origem, origem, 31);
+            ent->origem[31] = '\0'; //garante que o ultimo elemento seja nulo
+
 
             // Editar destino
-            printf("Destino atual: %s\n", ent->destino);
-            ler_texto("Novo destino: ", ent->destino, 32);
+            strncpy(ent->destino, destino, 31);
+            ent->destino[31] = '\0';
 
             // Editar peso
-            printf("Peso atual: %.2f\n", ent->peso);
-            ent->peso = ler_double_positivo("Novo peso: ");
+            ent->peso = peso;
 
-            // Editar distância
-            printf("Distância atual: %.2f\n", ent->distancia);
-            ent->distancia = ler_double_positivo("Nova distância: ");
+            // Editar distancia
+            ent->distancia = distancia;
 
             // Editar prioridade
-            printf("Prioridade atual: %d\n", ent->prioridade);
-            ent->prioridade = ler_prioridade("Nova prioridade (1-3): ");
-
+            ent->prioridade = prioridade;
             // Editar custo
-            printf("Custo atual: %.2f\n", ent->custo);
-            ent->custo = ler_double_positivo("Novo custo: ");
-
+             ent->custo = custo;
             // Editar tempo estimado
-            printf("Tempo estimado atual: %.2f\n", ent->tempo_estimado);
-            ent->tempo_estimado = ler_double_positivo("Novo tempo estimado: ");
+            ent->tempo_estimado = tempo;
 
             printf("Entrega ID %d editada com sucesso!\n", id);
             return;
+            mostrar_entrega(ent);
         }
         atual = atual->proximo;
     }

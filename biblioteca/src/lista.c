@@ -20,7 +20,7 @@ Lista *criar_lista(){
 	}
 	lista->inicio = NULL;
 	lista->fim = NULL;
-	lista->tamanho = 0;
+	lista->tamanho = 1;
 
 	return lista;
 }
