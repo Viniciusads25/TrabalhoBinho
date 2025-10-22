@@ -107,6 +107,7 @@ void ler_numeros(double *peso, double *distancia, double *tempo, double *custo) 
 int main() {
     Lista *lista = NULL;
     int opcao;
+    Entrega *entregaAtual = NULL;
 
     char origem[32], destino[32];
     double peso, distancia, custo, tempo;
@@ -123,6 +124,9 @@ int main() {
         printf("4 - Imprimir lista A\n");
         printf("5 - Ordenar lista A por prioridade\n");
         printf("6 - Editar Entrega.\n");
+        printf("7 - Iniciar Navegacao.\n");
+        printf("8 - Avançar Entrega");
+        printf("9 - Voltar Entrega");
         printf("0 - Sair\n");
         printf("Escolha uma opção:");
         fflush(stdout);
@@ -190,14 +194,38 @@ int main() {
                 printf("Digite o ID da entrega que deseja editar: ");
                 fflush(stdout);
                 int id_editar;
-                scanf("%d", &id_editar);
+                ler_int_positivo(&id_editar, "ID: ");
                 while(getchar() != '\n'); // limpa buffer
-                editar_entrega(lista, id_editar);
+                if(id_editar < 1  || id_editar > lista->tamanho){
+                	printf("ID invalido.\n");
+					}else{
+						ler_texto("Nova origem: ", origem, 32);
+						ler_texto("Novo destino: ", destino, 32);
+						ler_double_positivo(&peso, "Novo Valor:\n");
+						ler_double_positivo(&distancia, "Nova Distancia: ");
+						printf("Nova Prioridade: ");
+						fflush(stdout);
+						ler_prioridade(&prioridade);
+						ler_double_positivo(&custo, "Novo custo: ");
+						ler_double_positivo(&tempo, "Novo tempo estimado: " );
+
+						editar_entrega(origem, destino, peso, distancia, prioridade, custo, tempo, lista, id_editar );
+					}
             	}
                 break;
 
             case 0:
                 printf("Saindo...\n");
+                break;
+            case 7:
+                iniciar_navegacao(lista, &entregaAtual);
+                break;
+            case 8:
+            	avancar_entrega(lista, &entregaAtual);
+            	break;
+
+            case 9:
+                voltar_entrega(lista, &entregaAtual);
                 break;
             default:
                 printf("Opção inválida.\n");
@@ -206,7 +234,7 @@ int main() {
     } while (opcao != 0);
 
     if (lista) destruir_lista(lista, destruir_entrega);
-    if (listaB) destruir_lista(listaB, destruir_entrega);
+
 
     return 0;
 }

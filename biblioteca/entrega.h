@@ -54,6 +54,12 @@ void ordenar_prioridade_entrega(Lista *lista);
 void editar_entrega(const char *origem, const char *destino,
         double peso, double distancia, int prioridade, double custo, double tempo, Lista *lista,  int id);
 
+void iniciar_navegacao(Lista *lista, Entrega **entregaAtual);
+
+void avancar_entrega(Lista *lista, Entrega **entregaAtual);
+
+void voltar_entrega(Lista *lista, Entrega **entregaAtual);
+
 
 
 #endif /* INCLUDES_ENTREGA_H_ */

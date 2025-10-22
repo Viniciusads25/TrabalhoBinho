@@ -171,6 +171,80 @@ void editar_entrega(const char *origem, const char *destino,
 
     printf("Entrega com ID %d não encontrada.\n", id);
 }
+void iniciar_navegacao(Lista *lista, Entrega **entregaAtual) {
+    if (lista == NULL || lista->inicio == NULL) {
+        printf("\n⚠️  A lista está vazia. Não é possível iniciar a navegação.\n");
+        *entregaAtual = NULL;
+        return;
+    }
 
+    *entregaAtual = lista->inicio->dado;  // aponta para o primeiro dado
+    printf("\n✅ Navegação iniciada.\n");
+    printf("Entrega atual (ID %d): Origem: %s | Destino: %s | Peso: %.2f | Distância: %.2f | Prioridade: %d\n",
+           (*entregaAtual)->id, (*entregaAtual)->origem, (*entregaAtual)->destino,
+           (*entregaAtual)->peso, (*entregaAtual)->distancia, (*entregaAtual)->prioridade);
+}
 
+void avancar_entrega(Lista *lista, Entrega **entregaAtual) {
+    if (lista == NULL || lista->inicio == NULL) {
+        printf("\n⚠️  A lista está vazia. Não é possível avançar.\n");
+        return;
+    }
 
+    if (*entregaAtual == NULL) {
+        printf("\n⚠️  Inicie a navegação antes de avançar.\n");
+        return;
+    }
+
+    No *noAtual = lista->inicio;
+    while (noAtual != NULL && noAtual->dado != *entregaAtual) {
+        noAtual = noAtual->proximo;
+    }
+
+    if (noAtual == NULL) {
+        printf("\n❌ Erro interno: estado atual inválido.\n");
+        return;
+    }
+
+    if (noAtual->proximo == NULL) {
+        printf("\n⚠️  Você já está na última entrega. Não é possível avançar.\n");
+    } else {
+        *entregaAtual = noAtual->proximo->dado;
+        printf("\n➡️  Avançou para próxima entrega.\n");
+        printf("Entrega atual (ID %d): Origem: %s | Destino: %s | Peso: %.2f | Distância: %.2f | Prioridade: %d\n",
+               (*entregaAtual)->id, (*entregaAtual)->origem, (*entregaAtual)->destino,
+               (*entregaAtual)->peso, (*entregaAtual)->distancia, (*entregaAtual)->prioridade);
+    }
+}
+
+void voltar_entrega(Lista *lista, Entrega **entregaAtual) {
+    if (lista == NULL || lista->inicio == NULL) {
+        printf("\n⚠️  A lista está vazia. Não é possível voltar.\n");
+        return;
+    }
+
+    if (*entregaAtual == NULL) {
+        printf("\n⚠️  Inicie a navegação antes de voltar.\n");
+        return;
+    }
+
+    No *noAtual = lista->inicio;
+    while (noAtual != NULL && noAtual->dado != *entregaAtual) {
+        noAtual = noAtual->proximo;
+    }
+
+    if (noAtual == NULL) {
+        printf("\n❌ Erro interno: estado atual inválido.\n");
+        return;
+    }
+
+    if (noAtual->anterior == NULL) {
+        printf("\n⚠️  Você já está na primeira entrega. Não é possível voltar.\n");
+    } else {
+        *entregaAtual = noAtual->anterior->dado;
+        printf("\n⬅️  Voltou para entrega anterior.\n");
+        printf("Entrega atual (ID %d): Origem: %s | Destino: %s | Peso: %.2f | Distância: %.2f | Prioridade: %d\n",
+               (*entregaAtual)->id, (*entregaAtual)->origem, (*entregaAtual)->destino,
+               (*entregaAtual)->peso, (*entregaAtual)->distancia, (*entregaAtual)->prioridade);
+    }
+}
