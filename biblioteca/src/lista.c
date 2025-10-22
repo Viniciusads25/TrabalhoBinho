@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include "lista.h"
+#include <stdio.h>
 
 
 Lista *criar_lista(){
@@ -24,7 +25,7 @@ Lista *criar_lista(){
 	return lista;
 }
 
-void destruir_lista(Lista *lista, void (*liberar_dado)(void*)){
+void destruir_lista(Lista *lista, void (*liberar_entrega)(void*)){
 	if(lista->inicio == NULL){
 		printf("Erro. Lista vazia.\n");
 		return;
@@ -32,7 +33,7 @@ void destruir_lista(Lista *lista, void (*liberar_dado)(void*)){
 	No *atual = lista->inicio;
 	while(atual != NULL){
 		No *prox = atual->proximo;
-		if(liberar_dado != NULL) liberar_dado(atual->dado);
+		if(liberar_entrega != NULL) liberar_entrega(atual->dado);
 		free(atual);
 		atual = prox;
 
@@ -89,7 +90,8 @@ void *inserir_inicio(Lista *lista, void *dado){
 
 void remover_no(Lista *lista, No *no){
 	if(no == NULL){
-
+		printf("Erro. Endereco invalido.\n");
+		return;
 	}
 	if(no->anterior != NULL){
 
@@ -116,6 +118,7 @@ void remover_no(Lista *lista, No *no){
 
 	free(no);
 	lista->tamanho--;
+	printf("Removido.\n");
 }
 // percorre todos os elementos da lista e aplica a função passada (imprimir entrega)
 void percorrer_lista(Lista *lista, void (*funcao)(void*)) {
@@ -128,34 +131,43 @@ void percorrer_lista(Lista *lista, void (*funcao)(void*)) {
         atual = atual->proximo;
     }
 }
-void ordenar_lista(Lista *lista, int (*comparar)(void *, void *)){
-	if(!lista || !lista->inicio) {
-	printf("Erro. Endero de lista ou funcao invalido.\n");
-	return;
-	}
-	int trocou;
-	No *i;
-	do {
-		i = lista->inicio;
-		trocou = 0;
-		while(i->proximo != NULL){
-			void *a =  i->dado;
-			void *b =  i->proximo->dado;
-			//ex.: pra facilitar, quanto menor o numero, maior a prioridade: a=10 b=4
-			//atual: [a] -> [b] -> NULL
-			//depois: [b] -> [a] -> NULL
-			if(comparar(a, b) > 0){
-				void *temp = i->dado; //variável temporaria para armazenar o dado do no atual
+void ordenar_lista(Lista *lista, int (*comparar)(void *, void *)) {
+    if (!lista || !lista->inicio) {
+        printf("Erro: endereço de lista ou função inválido.\n");
+        return;
+    }
 
-				i->dado = i->proximo->dado; //ex.: inicio recebe o endereco da proxima entrega [b]
-											//b esta num nivel de prioridade mais importante e passa
-				i->proximo->dado = temp;//o proximo aqui aponta para [a]
-				trocou = 1;
-			}
-			i = i->proximo;
-		}
-	} while (trocou != 0);
+    int trocou;
+    No *i;
+
+    do {
+        trocou = 0;
+        i = lista->inicio;
+
+        while (i != NULL && i->proximo != NULL) {
+            void *a = i->dado;
+            void *b = i->proximo->dado;
+
+            // proteção extra contra nós com dado nulo
+            if (!a || !b) {
+                i = i->proximo;
+                continue;
+            }
+
+            if (comparar(a, b) > 0) {
+                void *temp = i->dado;
+                i->dado = i->proximo->dado;
+                i->proximo->dado = temp;
+                trocou = 1;
+            }
+
+            i = i->proximo;
+        }
+    } while (trocou);
+
+    printf("Ordenação concluída com sucesso!\n");
 }
+
 
 
 

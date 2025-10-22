@@ -51,7 +51,8 @@ void adicionar_entrega(Lista *lista, Entrega *entrega);
 
 void ordenar_prioridade_entrega(Lista *lista);
 
-int comparar_prioridade(void *a, void *b);
+void editar_entrega(Lista *lista, int id);
+
 
 
 #endif /* INCLUDES_ENTREGA_H_ */

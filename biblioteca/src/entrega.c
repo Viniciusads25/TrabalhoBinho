@@ -77,15 +77,16 @@ void destruir_entrega(void *entrega) {
 void mostrar_entrega(void *dado) {
     Entrega *ent = (Entrega*)dado;
 
-    printf("ID %d: %s -> %s | %.1f km | R$ %.2f | %.2f h\n",
+    printf("ID %d:-  Prioridade: %d  %s -> %s | %.1f km | R$ %.2f | %.2f h\n",
 
-           &ent->id, ent->origem, ent->destino, ent->distancia, ent->custo, ent->tempo_estimado);
+           ent->id, ent->prioridade, ent->origem, ent->destino, ent->distancia, ent->custo, ent->tempo_estimado);
 }
 //Chamada de funcao remover_no() para remoção da entrega que usuário deseja.
 //procura a entrega pelo id infomardo e exclui
 void remover_entrega(Lista *lista, int id){
-	if (lista == NULL){
+	if (lista == NULL || id < 0){
 		printf("Erro. Nao ha entregas.\n");
+		return;
 	}
 	No *atual = lista->inicio;
 	while(atual != NULL){
@@ -105,21 +106,73 @@ void adicionar_entrega(Lista *lista, Entrega *entrega) {
     inserir_final(lista, entrega);
 }
 
-void ordenar_prioridade_entrega(Lista *lista){
-	if(!lista){
-		printf("Lista entregas nao incializada.");
-		return;
-	}
-	    ordenar_lista(lista, comparar_prioridade);
+int comparar_prioridade(void *a, void *b) {
+    Entrega *entA = (Entrega*) a;
+    Entrega *entB = (Entrega*) b;
+
+    if (!entA || !entB) return 0; // proteção extra
+
+    if (entA->prioridade < entB->prioridade) return -1;
+    if (entA->prioridade > entB->prioridade) return 1;
+    return 0;
 }
 
-int comparar_prioridade(void *a, void *b){
-	Entrega *entA = (Entrega*)a;
-	Entrega *entB = (Entrega*)b;
-	if(entA->prioridade < entB->prioridade) return -1;
-	if(entA->prioridade > entB->prioridade) return 1;
-	return 0;
-
+void ordenar_prioridade_entrega(Lista *lista) {
+    if (!lista || !lista->inicio) {
+        printf("Lista de entregas não inicializada ou vazia.\n");
+        return;
+    }
+    ordenar_lista(lista, comparar_prioridade); // sem parênteses!
 }
+
+void editar_entrega(Lista *lista, int id) {
+    if (!lista || lista->tamanho == 0) {
+        printf("Lista vazia.\n");
+        return;
+    }
+
+    No *atual = lista->inicio;
+    while (atual) {
+        Entrega *ent = (Entrega*)atual->dado;
+        if (ent->id == id) {
+            printf("Editando entrega ID %d\n", id);
+
+            // Editar origem
+            printf("Origem atual: %s\n", ent->origem);
+            ler_texto("Nova origem: ", ent->origem, 32);
+
+            // Editar destino
+            printf("Destino atual: %s\n", ent->destino);
+            ler_texto("Novo destino: ", ent->destino, 32);
+
+            // Editar peso
+            printf("Peso atual: %.2f\n", ent->peso);
+            ent->peso = ler_double_positivo("Novo peso: ");
+
+            // Editar distância
+            printf("Distância atual: %.2f\n", ent->distancia);
+            ent->distancia = ler_double_positivo("Nova distância: ");
+
+            // Editar prioridade
+            printf("Prioridade atual: %d\n", ent->prioridade);
+            ent->prioridade = ler_prioridade("Nova prioridade (1-3): ");
+
+            // Editar custo
+            printf("Custo atual: %.2f\n", ent->custo);
+            ent->custo = ler_double_positivo("Novo custo: ");
+
+            // Editar tempo estimado
+            printf("Tempo estimado atual: %.2f\n", ent->tempo_estimado);
+            ent->tempo_estimado = ler_double_positivo("Novo tempo estimado: ");
+
+            printf("Entrega ID %d editada com sucesso!\n", id);
+            return;
+        }
+        atual = atual->proximo;
+    }
+
+    printf("Entrega com ID %d não encontrada.\n", id);
+}
+
 
 
